@@ -21,9 +21,9 @@ type ManagerOptions struct {
 }
 
 type Manager struct {
-	codec       securecookie.Codec
-	lifetime    int
-	gcInterval  int
+	Codec       securecookie.Codec
+	Lifetime    int
+	GcInterval  int
 	drivers     map[string]driver.Driver
 	sessionPool sync.Pool
 }
@@ -38,9 +38,9 @@ func NewManager(option *ManagerOptions) (*Manager, error) {
 		return nil, err
 	}
 	manager := &Manager{
-		codec:      codec,
-		lifetime:   option.Lifetime,
-		gcInterval: option.GcInterval,
+		Codec:      codec,
+		Lifetime:   option.Lifetime,
+		GcInterval: option.GcInterval,
 		drivers:    make(map[string]driver.Driver),
 		sessionPool: sync.Pool{New: func() any {
 			return &Session{
@@ -62,7 +62,7 @@ func (m *Manager) BuildSession(name string, driver ...string) (*Session, error) 
 	session := m.AcquireSession()
 	session.id = session.generateSessionID()
 	session.name = name
-	session.codec = m.codec
+	session.codec = m.Codec
 	session.driver = handler
 
 	return session, nil
@@ -104,11 +104,11 @@ func (m *Manager) driver(name ...string) (driver.Driver, error) {
 }
 
 func (m *Manager) startGcTimer(driver driver.Driver) {
-	ticker := time.NewTicker(time.Duration(m.gcInterval) * time.Minute)
+	ticker := time.NewTicker(time.Duration(m.GcInterval) * time.Minute)
 
 	go func() {
 		for range ticker.C {
-			if err := driver.Gc(m.lifetime * 60); err != nil {
+			if err := driver.Gc(m.Lifetime * 60); err != nil {
 				log.Printf("session gc error: %v\n", err)
 			}
 		}

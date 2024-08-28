@@ -32,20 +32,29 @@ func StartSession(manager *session.Manager, driver ...string) func(next http.Han
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			cookie, err := r.Cookie(s.GetName())
-			if err == nil {
-				s.SetID(cookie.Value)
+
+			// Try to get and decode session ID from cookie
+			sessionID := s.GetID()
+			if cookie, err := r.Cookie(s.GetName()); err == nil {
+				if err = manager.Codec.Decode(s.GetName(), cookie.Value, &sessionID); err == nil {
+					s.SetID(sessionID)
+				}
 			}
 
 			// Start session
 			s.Start()
 			r = r.WithContext(context.WithValue(r.Context(), CtxKey, s)) //nolint:staticcheck
 
+			// Encode session ID
+			if encoded, err := manager.Codec.Encode(s.GetName(), s.GetID()); err == nil {
+				sessionID = encoded
+			}
+
 			// Set session cookie in response
 			http.SetCookie(w, &http.Cookie{
 				Name:     s.GetName(),
-				Value:    s.GetID(),
-				Expires:  time.Now().Add(time.Duration(120) * time.Minute),
+				Value:    sessionID,
+				Expires:  time.Now().Add(time.Duration(manager.Lifetime) * time.Minute),
 				Secure:   true,
 				HttpOnly: true,
 				SameSite: http.SameSiteLaxMode,

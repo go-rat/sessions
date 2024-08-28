@@ -108,7 +108,7 @@ func (s *Session) Put(key string, value any) *Session {
 }
 
 func (s *Session) Reflash() *Session {
-	old := toStringSlice(s.Get("_flash.old", []any{}).([]any))
+	old := cast.ToStringSlice(s.Get("_flash.old", []any{}).([]any))
 	s.mergeNewFlashes(old...)
 	s.Put("_flash.old", []any{})
 	return s
@@ -212,7 +212,7 @@ func (s *Session) readFromHandler() map[string]any {
 }
 
 func (s *Session) ageFlashData() {
-	old := toStringSlice(s.Get("_flash.old", []any{}).([]any))
+	old := cast.ToStringSlice(s.Get("_flash.old", []any{}).([]any))
 	s.Forget(old...)
 	s.Put("_flash.old", s.Get("_flash.new", []any{}))
 	s.Put("_flash.new", []any{})
@@ -246,13 +246,4 @@ func (s *Session) reset() {
 	s.codec = nil
 	s.driver = nil
 	s.started = false
-}
-
-// toStringSlice converts an interface slice to a string slice.
-func toStringSlice(anySlice []any) []string {
-	strSlice := make([]string, len(anySlice))
-	for i, v := range anySlice {
-		strSlice[i] = cast.ToString(v)
-	}
-	return strSlice
 }
