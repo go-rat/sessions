@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-rat/session/contract"
+	"github.com/go-rat/session"
 )
 
 var (
@@ -16,11 +16,11 @@ var (
 
 // StartSession is an example middleware that starts a session for each request.
 // If this middleware not suitable for your application, you can create your own.
-func StartSession(manager contract.Manager, driver string) func(next http.Handler) http.Handler {
+func StartSession(manager session.Manager, driver string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Check if session exists
-			_, ok := r.Context().Value(CtxKey).(contract.Session)
+			_, ok := r.Context().Value(CtxKey).(session.Session)
 			if ok {
 				next.ServeHTTP(w, r)
 				return

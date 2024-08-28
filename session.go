@@ -9,11 +9,7 @@ import (
 	"github.com/jaevor/go-nanoid"
 	"github.com/spf13/cast"
 
-	"github.com/go-rat/session/contract"
-)
-
-var (
-	Lifetime = 120 // session lifetime in minutes
+	"github.com/go-rat/session/driver"
 )
 
 type Session struct {
@@ -22,11 +18,11 @@ type Session struct {
 	key        string
 	attributes map[string]any
 	codec      securecookie.Codec
-	driver     contract.Driver
+	driver     driver.Driver
 	started    bool
 }
 
-func NewSession(name, key string, maxAge int64, driver contract.Driver, id ...string) (contract.Session, error) {
+func NewSession(name, key string, maxAge int64, driver driver.Driver, id ...string) (*Session, error) {
 	codec, err := securecookie.New([]byte(key), &securecookie.Options{
 		MaxAge:     maxAge,
 		Serializer: securecookie.GobEncoder{},
@@ -60,7 +56,7 @@ func (s *Session) Exists(key string) bool {
 	return maps.Exists(s.attributes, key)
 }
 
-func (s *Session) Flash(key string, value any) contract.Session {
+func (s *Session) Flash(key string, value any) *Session {
 	s.Put(key, value)
 
 	old := s.Get("_flash.new", []any{}).([]any)
@@ -71,12 +67,12 @@ func (s *Session) Flash(key string, value any) contract.Session {
 	return s
 }
 
-func (s *Session) Flush() contract.Session {
+func (s *Session) Flush() *Session {
 	s.attributes = make(map[string]any)
 	return s
 }
 
-func (s *Session) Forget(keys ...string) contract.Session {
+func (s *Session) Forget(keys ...string) *Session {
 	maps.Forget(s.attributes, keys...)
 
 	return s
@@ -108,7 +104,7 @@ func (s *Session) Invalidate() error {
 	return s.migrate(true)
 }
 
-func (s *Session) Keep(keys ...string) contract.Session {
+func (s *Session) Keep(keys ...string) *Session {
 	s.mergeNewFlashes(keys...)
 	s.removeFromOldFlashData(keys...)
 	return s
@@ -118,7 +114,7 @@ func (s *Session) Missing(key string) bool {
 	return !s.Exists(key)
 }
 
-func (s *Session) Now(key string, value any) contract.Session {
+func (s *Session) Now(key string, value any) *Session {
 	s.Put(key, value)
 
 	old := s.Get("_flash.old", []any{}).([]any)
@@ -135,12 +131,12 @@ func (s *Session) Pull(key string, def ...any) any {
 	return maps.Pull(s.attributes, key, def...)
 }
 
-func (s *Session) Put(key string, value any) contract.Session {
+func (s *Session) Put(key string, value any) *Session {
 	s.attributes[key] = value
 	return s
 }
 
-func (s *Session) Reflash() contract.Session {
+func (s *Session) Reflash() *Session {
 	old := toStringSlice(s.Get("_flash.old", []any{}).([]any))
 	s.mergeNewFlashes(old...)
 	s.Put("_flash.old", []any{})
@@ -178,7 +174,7 @@ func (s *Session) Save() error {
 	return nil
 }
 
-func (s *Session) SetID(id string) contract.Session {
+func (s *Session) SetID(id string) *Session {
 	if s.isValidID(id) {
 		s.id = id
 	} else {
@@ -188,7 +184,7 @@ func (s *Session) SetID(id string) contract.Session {
 	return s
 }
 
-func (s *Session) SetName(name string) contract.Session {
+func (s *Session) SetName(name string) *Session {
 	s.name = name
 
 	return s
@@ -275,7 +271,7 @@ func (s *Session) mergeNewFlashes(keys ...string) {
 	s.Put("_flash.new", values)
 }
 
-func (s *Session) regenerateToken() contract.Session {
+func (s *Session) regenerateToken() *Session {
 	return s.Put("_token", s.generateSessionID())
 }
 

@@ -1,4 +1,4 @@
-package contract
+package driver
 
 // Driver is the interface for Session handlers.
 type Driver interface {

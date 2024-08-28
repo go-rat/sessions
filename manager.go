@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-rat/session/contract"
 	"github.com/go-rat/session/driver"
 )
 
@@ -22,7 +21,7 @@ type Manager struct {
 	key        string
 	lifetime   int
 	gcInterval int
-	drivers    map[string]contract.Driver
+	drivers    map[string]driver.Driver
 }
 
 // NewManager creates a new session manager.
@@ -31,13 +30,13 @@ func NewManager(option *ManagerOptions) *Manager {
 		key:        option.Key,
 		lifetime:   option.Lifetime,
 		gcInterval: option.GcInterval,
-		drivers:    make(map[string]contract.Driver),
+		drivers:    make(map[string]driver.Driver),
 	}
 	manager.createDefaultDriver()
 	return manager
 }
 
-func (m *Manager) BuildSession(name, driver string, sessionID ...string) (contract.Session, error) {
+func (m *Manager) BuildSession(name, driver string, sessionID ...string) (*Session, error) {
 	handler, err := m.driver(driver)
 	if err != nil {
 		return nil, err
@@ -46,13 +45,13 @@ func (m *Manager) BuildSession(name, driver string, sessionID ...string) (contra
 	return NewSession(name, m.key, int64(m.lifetime), handler, sessionID...)
 }
 
-func (m *Manager) Extend(driver string, handler contract.Driver) contract.Manager {
+func (m *Manager) Extend(driver string, handler driver.Driver) *Manager {
 	m.drivers[driver] = handler
 	m.startGcTimer(m.drivers[driver])
 	return m
 }
 
-func (m *Manager) driver(name ...string) (contract.Driver, error) {
+func (m *Manager) driver(name ...string) (driver.Driver, error) {
 	var driverName string
 	if len(name) > 0 {
 		driverName = name[0]
@@ -71,7 +70,7 @@ func (m *Manager) driver(name ...string) (contract.Driver, error) {
 	return m.drivers[driverName], nil
 }
 
-func (m *Manager) startGcTimer(driver contract.Driver) {
+func (m *Manager) startGcTimer(driver driver.Driver) {
 	ticker := time.NewTicker(time.Duration(m.gcInterval) * time.Minute)
 
 	go func() {
