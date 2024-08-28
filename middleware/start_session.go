@@ -36,7 +36,7 @@ func StartSession(manager contract.Manager, driver string) func(next http.Handle
 
 			// Start session
 			s.Start()
-			r = r.WithContext(context.WithValue(r.Context(), CtxKey, s))
+			r = r.WithContext(context.WithValue(r.Context(), CtxKey, s)) //nolint:staticcheck
 
 			// Set session cookie in response
 			http.SetCookie(w, &http.Cookie{
