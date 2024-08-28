@@ -16,7 +16,7 @@ var (
 
 // StartSession is an example middleware that starts a session for each request.
 // If this middleware not suitable for your application, you can create your own.
-func StartSession(manager *session.Manager, driver string) func(next http.Handler) http.Handler {
+func StartSession(manager *session.Manager, driver ...string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Check if session exists
@@ -27,9 +27,10 @@ func StartSession(manager *session.Manager, driver string) func(next http.Handle
 			}
 
 			// Build session
-			s, err := manager.BuildSession(CookieName, driver)
+			s, err := manager.BuildSession(CookieName, driver...)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 			cookie, _ := r.Cookie(s.GetName())
 			s.SetID(cookie.Value)

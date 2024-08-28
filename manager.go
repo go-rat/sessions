@@ -53,8 +53,8 @@ func NewManager(option *ManagerOptions) (*Manager, error) {
 	return manager, nil
 }
 
-func (m *Manager) BuildSession(name, driver string, sessionID ...string) (*Session, error) {
-	handler, err := m.driver(driver)
+func (m *Manager) BuildSession(name string, driver ...string) (*Session, error) {
+	handler, err := m.driver(driver...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,11 +63,6 @@ func (m *Manager) BuildSession(name, driver string, sessionID ...string) (*Sessi
 	session.name = name
 	session.codec = m.codec
 	session.driver = handler
-	if len(sessionID) > 0 {
-		session.SetID(sessionID[0])
-	} else {
-		session.SetID("")
-	}
 
 	return session, nil
 }
