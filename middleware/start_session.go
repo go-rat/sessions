@@ -16,7 +16,7 @@ var (
 
 // StartSession is an example middleware that starts a session for each request.
 // If this middleware not suitable for your application, you can create your own.
-func StartSession(manager session.Manager, driver string) func(next http.Handler) http.Handler {
+func StartSession(manager *session.Manager, driver string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Check if session exists
@@ -55,6 +55,9 @@ func StartSession(manager session.Manager, driver string) func(next http.Handler
 			if err = s.Save(); err != nil {
 				log.Printf("session save error: %v", err)
 			}
+
+			// Release session
+			manager.ReleaseSession(s)
 		})
 	}
 }

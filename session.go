@@ -15,37 +15,10 @@ import (
 type Session struct {
 	id         string
 	name       string
-	key        string
 	attributes map[string]any
 	codec      securecookie.Codec
 	driver     driver.Driver
 	started    bool
-}
-
-func NewSession(name, key string, maxAge int64, driver driver.Driver, id ...string) (*Session, error) {
-	codec, err := securecookie.New([]byte(key), &securecookie.Options{
-		MaxAge:     maxAge,
-		Serializer: securecookie.GobEncoder{},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	store := &Session{
-		name:       name,
-		key:        key,
-		driver:     driver,
-		started:    false,
-		attributes: make(map[string]any),
-		codec:      codec,
-	}
-	if len(id) > 0 {
-		store.SetID(id[0])
-	} else {
-		store.SetID("")
-	}
-
-	return store, nil
 }
 
 func (s *Session) All() map[string]any {
@@ -283,6 +256,15 @@ func (s *Session) removeFromOldFlashData(keys ...string) {
 		})
 	}
 	s.Put("_flash.old", old)
+}
+
+func (s *Session) reset() {
+	s.id = ""
+	s.name = ""
+	s.attributes = make(map[string]any)
+	s.codec = nil
+	s.driver = nil
+	s.started = false
 }
 
 // toStringSlice converts an interface slice to a string slice.
