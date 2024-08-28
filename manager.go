@@ -60,6 +60,7 @@ func (m *Manager) BuildSession(name string, driver ...string) (*Session, error) 
 	}
 
 	session := m.AcquireSession()
+	session.id = session.generateSessionID()
 	session.name = name
 	session.codec = m.codec
 	session.driver = handler

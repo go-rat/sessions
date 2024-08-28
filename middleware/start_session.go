@@ -32,8 +32,10 @@ func StartSession(manager *session.Manager, driver ...string) func(next http.Han
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			cookie, _ := r.Cookie(s.GetName())
-			s.SetID(cookie.Value)
+			cookie, err := r.Cookie(s.GetName())
+			if err == nil {
+				s.SetID(cookie.Value)
+			}
 
 			// Start session
 			s.Start()

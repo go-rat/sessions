@@ -36,7 +36,6 @@ func (s *Session) Flash(key string, value any) *Session {
 	s.Put("_flash.new", append(old, key))
 
 	s.removeFromOldFlashData(key)
-
 	return s
 }
 
@@ -47,7 +46,6 @@ func (s *Session) Flush() *Session {
 
 func (s *Session) Forget(keys ...string) *Session {
 	maps.Forget(s.attributes, keys...)
-
 	return s
 }
 
@@ -122,7 +120,6 @@ func (s *Session) Regenerate(destroy ...bool) error {
 		return err
 	}
 
-	s.regenerateToken()
 	return nil
 }
 
@@ -143,7 +140,6 @@ func (s *Session) Save() error {
 	}
 
 	s.started = false
-
 	return nil
 }
 
@@ -159,23 +155,13 @@ func (s *Session) SetID(id string) *Session {
 
 func (s *Session) SetName(name string) *Session {
 	s.name = name
-
 	return s
 }
 
 func (s *Session) Start() bool {
 	s.loadSession()
-
-	if !s.Has("_token") {
-		s.regenerateToken()
-	}
-
 	s.started = true
 	return s.started
-}
-
-func (s *Session) Token() string {
-	return s.Get("_token").(string)
 }
 
 func (s *Session) generateSessionID() string {
@@ -208,8 +194,7 @@ func (s *Session) migrate(destroy ...bool) error {
 		}
 	}
 
-	s.SetID(s.generateSessionID())
-
+	s.id = s.generateSessionID()
 	return nil
 }
 
@@ -242,10 +227,6 @@ func (s *Session) mergeNewFlashes(keys ...string) {
 	}
 
 	s.Put("_flash.new", values)
-}
-
-func (s *Session) regenerateToken() *Session {
-	return s.Put("_token", s.generateSessionID())
 }
 
 func (s *Session) removeFromOldFlashData(keys ...string) {
