@@ -52,12 +52,13 @@ func StartSession(manager *session.Manager, driver ...string) func(next http.Han
 
 			// Set session cookie in response
 			http.SetCookie(w, &http.Cookie{
-				Name:     s.GetName(),
-				Value:    sessionID,
-				Expires:  time.Now().Add(time.Duration(manager.Lifetime) * time.Minute),
-				Secure:   true,
-				HttpOnly: true,
-				SameSite: http.SameSiteLaxMode,
+				Name:        s.GetName(),
+				Value:       sessionID,
+				Expires:     time.Now().Add(time.Duration(manager.Lifetime) * time.Minute),
+				Secure:      true,
+				HttpOnly:    true,
+				SameSite:    http.SameSiteLaxMode,
+				Partitioned: true,
 			})
 
 			// Continue processing request

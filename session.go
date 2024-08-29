@@ -164,6 +164,10 @@ func (s *Session) Start() bool {
 	return s.started
 }
 
+func (s *Session) IsStarted() bool {
+	return s.started
+}
+
 func (s *Session) generateSessionID() string {
 	alphabet := `0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`
 	generator := nanoid.MustCustomASCII(alphabet, 32)
