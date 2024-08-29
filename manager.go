@@ -18,6 +18,8 @@ type ManagerOptions struct {
 	Lifetime int
 	// session garbage collection interval in minutes
 	GcInterval int
+	// Disable default file driver if set to true
+	DisableDefaultDriver bool
 }
 
 type Manager struct {
@@ -49,7 +51,10 @@ func NewManager(option *ManagerOptions) (*Manager, error) {
 		},
 		},
 	}
-	manager.createDefaultDriver()
+
+	if !option.DisableDefaultDriver {
+		return manager, manager.createDefaultDriver()
+	}
 	return manager, nil
 }
 
@@ -68,10 +73,13 @@ func (m *Manager) BuildSession(name string, driver ...string) (*Session, error) 
 	return session, nil
 }
 
-func (m *Manager) Extend(driver string, handler driver.Driver) *Manager {
+func (m *Manager) Extend(driver string, handler driver.Driver) error {
+	if m.drivers[driver] != nil {
+		return fmt.Errorf("driver [%s] already exists", driver)
+	}
 	m.drivers[driver] = handler
 	m.startGcTimer(m.drivers[driver])
-	return m
+	return nil
 }
 
 func (m *Manager) AcquireSession() *Session {
@@ -115,6 +123,6 @@ func (m *Manager) startGcTimer(driver driver.Driver) {
 	}()
 }
 
-func (m *Manager) createDefaultDriver() {
-	m.Extend("default", driver.NewFile("", 120))
+func (m *Manager) createDefaultDriver() error {
+	return m.Extend("default", driver.NewFile("", 120))
 }
