@@ -60,10 +60,6 @@ func (f *File) Gc(maxLifetime int) error {
 	})
 }
 
-func (f *File) Open(string, string) error {
-	return nil
-}
-
 func (f *File) Read(id string) (string, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
