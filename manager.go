@@ -33,7 +33,7 @@ type Manager struct {
 // NewManager creates a new session manager.
 func NewManager(option *ManagerOptions) (*Manager, error) {
 	codec, err := securecookie.New([]byte(option.Key), &securecookie.Options{
-		MaxAge:     int64(option.Lifetime),
+		MaxAge:     int64(option.Lifetime) * 60,
 		Serializer: securecookie.GobEncoder{},
 	})
 	if err != nil {
