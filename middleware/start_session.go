@@ -20,7 +20,7 @@ func StartSession(manager *session.Manager, driver ...string) func(next http.Han
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Check if session exists
-			_, ok := r.Context().Value(CtxKey).(session.Session)
+			_, ok := r.Context().Value(CtxKey).(*session.Session)
 			if ok {
 				next.ServeHTTP(w, r)
 				return
