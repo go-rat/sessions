@@ -6,23 +6,23 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-rat/session"
+	"github.com/go-rat/sessions"
 )
 
 // StartSession is an example middleware that starts a session for each request.
 // If this middleware not suitable for your application, you can create your own.
-func StartSession(manager *session.Manager, driver ...string) func(next http.Handler) http.Handler {
+func StartSession(manager *sessions.Manager, driver ...string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Check if session exists
-			_, ok := r.Context().Value(session.CtxKey).(*session.Session)
+			_, ok := r.Context().Value(sessions.CtxKey).(*sessions.Session)
 			if ok {
 				next.ServeHTTP(w, r)
 				return
 			}
 
 			// Build session
-			s, err := manager.BuildSession(session.CookieName, driver...)
+			s, err := manager.BuildSession(sessions.CookieName, driver...)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
@@ -38,7 +38,7 @@ func StartSession(manager *session.Manager, driver ...string) func(next http.Han
 
 			// Start session
 			s.Start()
-			r = r.WithContext(context.WithValue(r.Context(), session.CtxKey, s)) //nolint:staticcheck
+			r = r.WithContext(context.WithValue(r.Context(), sessions.CtxKey, s)) //nolint:staticcheck
 
 			// Encode session ID
 			if encoded, err := manager.Codec.Encode(s.GetName(), s.GetID()); err == nil {

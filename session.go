@@ -1,4 +1,4 @@
-package session
+package sessions
 
 import (
 	stdmaps "maps"
@@ -9,7 +9,7 @@ import (
 	"github.com/jaevor/go-nanoid"
 	"github.com/spf13/cast"
 
-	"github.com/go-rat/session/driver"
+	"github.com/go-rat/sessions/driver"
 )
 
 type Session struct {

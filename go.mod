@@ -1,4 +1,4 @@
-module github.com/go-rat/session
+module github.com/go-rat/sessions
 
 go 1.23
 

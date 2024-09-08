@@ -1,4 +1,4 @@
-package session
+package sessions
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-rat/securecookie"
 
-	"github.com/go-rat/session/driver"
+	"github.com/go-rat/sessions/driver"
 )
 
 var (
