@@ -3,12 +3,18 @@ package session
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
 	"github.com/go-rat/securecookie"
 
 	"github.com/go-rat/session/driver"
+)
+
+var (
+	CtxKey     = "session" // session default context key
+	CookieName = "session" // session default cookie name
 )
 
 type ManagerOptions struct {
@@ -71,6 +77,25 @@ func (m *Manager) BuildSession(name string, driver ...string) (*Session, error) 
 	session.driver = handler
 
 	return session, nil
+}
+
+func (m *Manager) GetSession(r *http.Request, key ...any) (*Session, error) {
+	if len(key) == 0 {
+		key = append(key, CtxKey)
+	}
+	session, ok := r.Context().Value(key[0]).(*Session)
+	if !ok {
+		return nil, fmt.Errorf("session not found")
+	}
+	return session, nil
+}
+
+func (m *Manager) HasSession(r *http.Request, key ...any) bool {
+	if len(key) == 0 {
+		key = append(key, CtxKey)
+	}
+	_, ok := r.Context().Value(key[0]).(*Session)
+	return ok
 }
 
 func (m *Manager) Extend(driver string, handler driver.Driver) error {
