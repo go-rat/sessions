@@ -50,6 +50,7 @@ func StartSession(manager *sessions.Manager, driver ...string) func(next http.Ha
 				Name:        s.GetName(),
 				Value:       sessionID,
 				Expires:     time.Now().Add(time.Duration(manager.Lifetime) * time.Minute),
+				Path:        "/",
 				Secure:      true,
 				HttpOnly:    true,
 				SameSite:    http.SameSiteLaxMode,
