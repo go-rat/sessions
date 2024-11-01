@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/go-rat/securecookie v1.0.1
-	github.com/go-rat/utils v1.0.2
+	github.com/go-rat/utils v1.0.3
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/spf13/cast v1.7.0
 )

@@ -6,8 +6,8 @@ github.com/gabriel-vasile/mimetype v1.4.5 h1:J7wGKdGu33ocBOhGy0z653k/lFKLFDPJMG8
 github.com/gabriel-vasile/mimetype v1.4.5/go.mod h1:ibHel+/kbxn9x2407k1izTA1S81ku1z/DlgOW2QE0M4=
 github.com/go-rat/securecookie v1.0.1 h1:HW0fpKmB+FjJzXTw8ABOwBJ+XrPmRBSZqHhmrv86lBo=
 github.com/go-rat/securecookie v1.0.1/go.mod h1:tP/ObWYyjmcpabQ7WTon/i2lBSip/Aolliw2llXuPDU=
-github.com/go-rat/utils v1.0.2 h1:iUjGVP2YTMy2AjLyME5G4O5GctMhyJ0LgPJhosgltgU=
-github.com/go-rat/utils v1.0.2/go.mod h1:rSAQLE40B+IHSRI7r0/JuNOyEAZbtY6gRaW0SeCcSsQ=
+github.com/go-rat/utils v1.0.3 h1:SqH/O0KYq4SBv8naSAjJA4hC45/d8NLNrTCONfqjbFM=
+github.com/go-rat/utils v1.0.3/go.mod h1:4WNPlrF57KmeGZN3HOeBgdBVLJL3xgba4QRP/t6pKrE=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/gofuzz v1.2.0 h1:xRy4A+RhZaiKjJ1bPfwQ8sedCA+YS2YcCHW6ec7JMi0=
