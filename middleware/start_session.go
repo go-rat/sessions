@@ -29,8 +29,9 @@ func StartSession(manager *sessions.Manager, driver ...string) func(next http.Ha
 			}
 
 			// Try to get and decode session ID from cookie
-			sessionID := s.GetID()
+			var sessionID string
 			if cookie, err := r.Cookie(s.GetName()); err == nil {
+				sessionID = cookie.Value
 				s.SetID(cookie.Value)
 			}
 
