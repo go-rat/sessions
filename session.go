@@ -209,7 +209,7 @@ func (s *Session) readFromHandler() map[string]any {
 	}
 
 	var data map[string]any
-	if err = s.codec.Decode(s.GetName(), value, &data); err != nil {
+	if _, err = s.codec.Decode(s.GetName(), value, &data); err != nil {
 		return nil
 	}
 	return data

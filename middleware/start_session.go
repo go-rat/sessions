@@ -31,31 +31,27 @@ func StartSession(manager *sessions.Manager, driver ...string) func(next http.Ha
 			// Try to get and decode session ID from cookie
 			sessionID := s.GetID()
 			if cookie, err := r.Cookie(s.GetName()); err == nil {
-				if err = manager.Codec.Decode(s.GetName(), cookie.Value, &sessionID); err == nil {
-					s.SetID(sessionID)
-				}
+				s.SetID(cookie.Value)
 			}
 
 			// Start session
 			s.Start()
 			r = r.WithContext(context.WithValue(r.Context(), sessions.CtxKey, s)) //nolint:staticcheck
 
-			// Encode session ID
-			if encoded, err := manager.Codec.Encode(s.GetName(), s.GetID()); err == nil {
-				sessionID = encoded
-			}
-
-			// Set session cookie in response
-			http.SetCookie(w, &http.Cookie{
-				Name:     s.GetName(),
-				Value:    sessionID,
-				Expires:  time.Now().Add(time.Duration(manager.Lifetime) * time.Minute),
-				Path:     "/",
-				HttpOnly: true,
-			})
-
 			// Continue processing request
 			next.ServeHTTP(w, r)
+
+			// Check whether we need to reset session Cookie if session ID has changed
+			if s.GetID() != sessionID {
+				// Set session cookie in response
+				http.SetCookie(w, &http.Cookie{
+					Name:     s.GetName(),
+					Value:    s.GetID(),
+					Expires:  time.Now().Add(time.Duration(manager.Lifetime) * time.Minute),
+					Path:     "/",
+					HttpOnly: true,
+				})
+			}
 
 			// Save session
 			if err = s.Save(); err != nil {
