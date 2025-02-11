@@ -39,9 +39,6 @@ func StartSession(manager *sessions.Manager, driver ...string) func(next http.Ha
 			s.Start()
 			r = r.WithContext(context.WithValue(r.Context(), sessions.CtxKey, s)) //nolint:staticcheck
 
-			// Continue processing request
-			next.ServeHTTP(w, r)
-
 			// Check whether we need to reset session Cookie if session ID has changed
 			if s.GetID() != sessionID {
 				// Set session cookie in response
@@ -53,6 +50,9 @@ func StartSession(manager *sessions.Manager, driver ...string) func(next http.Ha
 					HttpOnly: true,
 				})
 			}
+
+			// Continue processing request
+			next.ServeHTTP(w, r)
 
 			// Save session
 			if err = s.Save(); err != nil {
