@@ -1,17 +1,17 @@
 module github.com/go-rat/sessions
 
-go 1.23
+go 1.24.0
 
 require (
 	github.com/go-rat/securecookie v1.1.0
-	github.com/go-rat/utils v1.0.9
+	github.com/go-rat/utils v1.1.3
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/spf13/cast v1.7.1
 )
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
-	golang.org/x/crypto v0.33.0 // indirect
-	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 )
