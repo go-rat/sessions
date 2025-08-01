@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-rat/securecookie"
+	"github.com/libtnb/securecookie"
 
-	"github.com/go-rat/sessions/driver"
+	"github.com/libtnb/sessions/driver"
 )
 
 var (

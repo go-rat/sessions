@@ -4,12 +4,12 @@ import (
 	stdmaps "maps"
 	"slices"
 
-	"github.com/go-rat/securecookie"
-	"github.com/go-rat/utils/maps"
+	"github.com/libtnb/securecookie"
+	"github.com/libtnb/utils/maps"
 	"github.com/jaevor/go-nanoid"
 	"github.com/spf13/cast"
 
-	"github.com/go-rat/sessions/driver"
+	"github.com/libtnb/sessions/driver"
 )
 
 type Session struct {

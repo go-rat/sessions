@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-rat/sessions"
+	"github.com/libtnb/sessions"
 )
 
 // StartSession is an example middleware that starts a session for each request.

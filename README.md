@@ -1,6 +1,6 @@
-# Session
+# Sessions
 
-Session package for Go, use stdlib and secure cookie.
+Sessions package for Go, use stdlib and secure cookie.
 
 Since the experience for `gorilla/sessions` was s*it, we decided to write our own.
 
